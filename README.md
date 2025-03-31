@@ -8,13 +8,13 @@ React is a declarative, efficient, and flexible JavaScript library for building 
 - [ ] Extend the Quiz component to make the "Next Question" button functional. It should move to the next question and display the total score when all questions have been answered.
 
 ## Instructions
-Clone the Quiz App repository from: https://github.com/CMU-17-214/s24-rec09 and run
+Clone the Quiz App repository from: https://github.com/gobi/s25-lab10 and run
 
 ```
 npm install
 npm start
 ```
-![Local Image](https://github.com/CMU-17-214/s24-rec09/blob/main/src/image/starterPic.png)
+![Local Image](https://github.com/gobi/s25-lab10/blob/main/src/image/starterPic.png)
 
 This will start the front-end server. You will be able to see a simple quiz GUI from the link http://localhost:3000/. You can update the front-end code as the server is running in the development mode (i.e., `npm start`). It will automatically recompile and reload.
 
