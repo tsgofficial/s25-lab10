@@ -1,11 +1,11 @@
-import quizData from '../data/quizData';
-import QuizQuestion from './QuizQuestion';
+import quizData from "../data/quizData";
+import QuizQuestion from "./QuizQuestion";
 
 /**
  * The `QuizCore` class represents the core logic for managing a quiz, including
  * maintaining the quiz questions, tracking the user's progress, and calculating
  * their score.
- * 
+ *
  * It provides methods for navigating through the quiz, answering questions,
  * and retrieving information about the current state of the quiz.
  */
@@ -31,7 +31,10 @@ class QuizCore {
    */
   public getCurrentQuestion(): QuizQuestion | null {
     // Returns the current quiz question.
-    if (this.currentQuestionIndex >= 0 && this.currentQuestionIndex < this.questions.length) {
+    if (
+      this.currentQuestionIndex >= 0 &&
+      this.currentQuestionIndex < this.questions.length
+    ) {
       return this.questions[this.currentQuestionIndex];
     }
     return null;
@@ -40,8 +43,13 @@ class QuizCore {
   /**
    * Move to the next question.
    */
-  public nextQuestion(): void {      
+  public nextQuestion(): void {
     this.currentQuestionIndex++;
+    console.log("Next Question Index:", this.currentQuestionIndex);
+  }
+
+  public getCurrentQuestionIndex(): number {
+    return this.currentQuestionIndex;
   }
 
   /**
