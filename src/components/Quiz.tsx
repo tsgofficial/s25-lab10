@@ -1,69 +1,42 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./Quiz.css";
 import QuizCore from "../core/QuizCore";
 import QuizQuestion from "../core/QuizQuestion";
 
-interface QuizState {
-  currentQuestionIndex: number;
-  selectedAnswer: string | null;
-  score: number;
-  isQuizCompleted: boolean;
-  currentQuestion: QuizQuestion | null;
-}
+const quizCore = new QuizCore();
 
 const Quiz: React.FC = () => {
-  const quizCore = new QuizCore();
-  const [state, setState] = useState<QuizState>({
-    currentQuestionIndex: 0,
-    selectedAnswer: null,
-    score: 0,
-    isQuizCompleted: false,
-    currentQuestion: quizCore.getCurrentQuestion(),
-  });
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [isQuizCompleted, setIsQuizCompleted] = useState(false);
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(
+    quizCore.getCurrentQuestion()
+  );
+  const [score, setScore] = useState(0);
 
-  useEffect(() => {
-    // Check if the quiz has been completed
-    if (!quizCore.hasNextQuestion()) {
-      setState((prevState) => ({
-        ...prevState,
-        isQuizCompleted: true,
-        score: quizCore.getScore(), // Calculate the final score
-      }));
-    }
-  }, [state.currentQuestionIndex, quizCore]);
-
-  const handleOptionSelect = (option: string): void => {
-    setState((prevState) => ({
-      ...prevState,
-      selectedAnswer: option,
-    }));
+  const handleOptionSelect = (option: string) => {
+    setSelectedAnswer(option);
   };
 
-  const handleButtonClick = (): void => {
-    if (state.selectedAnswer) {
-      // Answer the current question
-      quizCore.answerQuestion(state.selectedAnswer);
+  const handleNextQuestion = () => {
+    if (selectedAnswer) {
+      quizCore.answerQuestion(selectedAnswer);
 
-      // Move to the next question only if there is a next question
       if (quizCore.hasNextQuestion()) {
         quizCore.nextQuestion();
-        // console.log("Next Question Index:", quizCore.getCurrentQuestionIndex());
-        quizCore.getCurrentQuestion();
-        setState((prevState) => ({
-          ...prevState,
-          currentQuestionIndex: prevState.currentQuestionIndex + 1,
-          selectedAnswer: null, // Reset the selected answer for the next question
-          currentQuestion: quizCore.getCurrentQuestion(), // Update the current question
-        }));
+        setCurrentQuestion(quizCore.getCurrentQuestion());
+        setQuestionIndex(questionIndex + 1);
+        setSelectedAnswer(null);
+      } else {
+        setIsQuizCompleted(true);
+        setScore(quizCore.getScore());
       }
     }
   };
 
-  const { currentQuestion, selectedAnswer, score, isQuizCompleted } = state;
-
   if (isQuizCompleted) {
     return (
-      <div>
+      <div className="quiz-container">
         <h2>Quiz Completed</h2>
         <p>
           Final Score: {score} out of {quizCore.getTotalQuestions()}
@@ -73,30 +46,34 @@ const Quiz: React.FC = () => {
   }
 
   return (
-    <div>
-      <h2>Quiz Question:</h2>
+    <div className="quiz-container">
+      <h2>Question {questionIndex + 1}</h2>
       {currentQuestion && (
         <>
-          <p>{currentQuestion.question}</p>
-          <h3>Answer Options:</h3>
-          <ul>
+          <p className="question-text">{currentQuestion.question}</p>
+          <ul className="options-list">
             {currentQuestion.options.map((option) => (
               <li
                 key={option}
+                className={`option ${
+                  selectedAnswer === option ? "selected" : ""
+                }`}
                 onClick={() => handleOptionSelect(option)}
-                className={selectedAnswer === option ? "selected" : ""}
               >
                 {option}
               </li>
             ))}
           </ul>
 
-          <h3>Selected Answer:</h3>
-          <p>{selectedAnswer ?? "No answer selected"}</p>
+          <p className="selected-answer">
+            <strong>Selected Answer:</strong>{" "}
+            {selectedAnswer ?? "No answer selected"}
+          </p>
 
           <button
-            onClick={handleButtonClick}
-            disabled={selectedAnswer === null} // Disable the button if no answer is selected
+            onClick={handleNextQuestion}
+            disabled={!selectedAnswer}
+            className="next-button"
           >
             Next Question
           </button>
